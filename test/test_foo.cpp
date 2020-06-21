@@ -3,7 +3,7 @@
 #endif
 
 #include <boost/test/unit_test.hpp>
-#include "../src/shared/Foo.hpp"
+#include "../src/shared/foo.hpp"
 
 
 BOOST_AUTO_TEST_SUITE(foo_suite)
