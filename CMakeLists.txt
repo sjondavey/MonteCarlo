@@ -1,10 +1,12 @@
 cmake_minimum_required(VERSION 3.16)
 
-# Definitions
+#================================#
+#  Global Configuration          #
+#================================#
 set(PROJECT_NAME_STR monte_carlo_derivatives)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/bin")
-# "I want C++11 for all targets, I dont't want to use any GNU or MS extensions." As of c++17, this still is IMHO the best way
-# set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Project title and define versioning
 project(${PROJECT_NAME_STR} 
@@ -12,42 +14,28 @@ project(${PROJECT_NAME_STR}
         DESCRIPTION "Monte Carlo simulation of derivatives"
         LANGUAGES CXX)
 
-set(DEMO_INCLUDES ${DEMO_INCLUDES} ${PROJECT_SOURCE_DIR}/src)
-set(DEMO_INCLUDES ${DEMO_INCLUDES} ${PROJECT_SOURCE_DIR}/shared)
+# From: https://cmake.org/cmake/help/git-master/module/FindBoost.html
+# set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
+find_package(Boost)
+if (Boost_FOUND)
+  include_directories(${Boost_INCLUDE_DIRS})
+  # DO I NEED BOOST LIBRARIES? target_link_libraries(${MC_LIBRARY} ${Boost_LIBRARIES})
+else()
+   MESSAGE("BOOST not found")
+endif()
 
-# Gather the header and source files
-#file(GLOB_RECURSE INC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.hpp)
-#file(GLOB_RECURSE SRC_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.cpp)
 
-# Gather all sources except the main entry point
-file(GLOB_RECURSE INC_FILES src/*/*.hpp)
-file(GLOB_RECURSE SRC_FILES src/*/*.cpp)
-
-# Build object files for reuse (e.g. in test)
-# ADD_LIBRARY(demo_objects OBJECT ${INC_FILES} ${SRC_FILES})
-
-# Dependencies
-find_package(Boost COMPONENTS filesystem system unit_test_framework REQUIRED)
-
-# Unit tests
+# Find other CMakeList.txt 
+add_subdirectory(src)
 add_subdirectory(test)
-
-# Assign the include directories
-include_directories(${Boost_INCLUDE_DIRS})
-
-# Build
-#set(SOURCE_FILES src/main.cpp $<TARGET_OBJECTS:demo_objects>)
-set(SOURCE_FILES src/main.cpp ${INC_FILES} ${SRC_FILES})
-add_executable(monte_carlo_demo ${SOURCE_FILES})
-target_link_libraries(monte_carlo_demo ${Boost_LIBRARIES})
+add_subdirectory(app)
+add_subdirectory(python)
 
 
+# Notes:
+# Good Overall refernces for CMake projects:
+# https://stackoverflow.com/questions/40227333/cmake-setup-multiple-projects-and-dependiencies-between-them/40242257#40242257
 
-#include(CTest)
-#enable_testing()
-
-#add_library(MonteCarlo MonteCarlo.cpp)
-
-#set(CPACK_PROJECT_NAME ${PROJECT_NAME})
-#set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
-#include(CPack)
+# include_directories vs. target_include_directories (https://stackoverflow.com/questions/31969547/what-is-the-difference-between-include-directories-and-target-include-directorie)
+# include_directories(x/y): accessible for all the files in the source-tree
+# target_include_directories(t x/y): accessible for a specific target when compile

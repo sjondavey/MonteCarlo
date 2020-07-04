@@ -1,30 +1,27 @@
-cmake_minimum_required(VERSION 3.16)
-
 # Project settings
+# Reference: https://github.com/albertchan/cmake-boost-demo
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ".")
-set(PROJECT_UNIT_TESTS_NAME ${PROJECT_NAME_STR}_unit_tests)
+set(MC_UNIT_TESTS ${PROJECT_NAME_STR}_unit_tests)
+
+set(MC_LIB_TEST_SRC 
+    test_main.cpp
+    Black76FormulaTest.cpp
+    )
+
+add_executable(${MC_UNIT_TESTS} ${MC_LIB_TEST_SRC})
 
 # Dependencies
-find_package(Boost COMPONENTS filesystem system unit_test_framework REQUIRED)
-
-# Gather the header and source files
-file(GLOB UNIT_TESTS_INC_FILES ${PROJECT_SOURCE_DIR}/test/*.hpp)
-file(GLOB UNIT_TESTS_SRC_FILES ${PROJECT_SOURCE_DIR}/test/*.cpp)
-
-# Include paths
-set(UNIT_TESTS_INCLUDES ${PROJECT_INCLUDE_DIR}
-        ${PROJECT_SOURCE_DIR}/src
-        ${Boost_INCLUDE_DIR})
-
-# Assign the include directories
-include_directories(${Boost_INCLUDE_DIRS})
-include_directories(${UNIT_TESTS_INCLUDES})
-
-# Build unit tests
 add_definitions(-DBOOST_TEST_DYN_LINK)
-#add_executable(${PROJECT_UNIT_TESTS_NAME} ${UNIT_TESTS_SRC_FILES} $<TARGET_OBJECTS:demo_objects> )
-add_executable(${PROJECT_UNIT_TESTS_NAME} ${UNIT_TESTS_SRC_FILES} ${SRC_FILES})
-target_link_libraries(${PROJECT_UNIT_TESTS_NAME} ${Boost_LIBRARIES})
+find_package(Boost COMPONENTS filesystem system unit_test_framework REQUIRED)
+if (Boost_FOUND)
+  # ALREADY INCLUDED: include_directories(${Boost_INCLUDE_DIRS})
+  target_link_libraries(${MC_UNIT_TESTS} ${Boost_LIBRARIES})
+else()
+   MESSAGE("***BOOST not found")
+endif()
+
+target_link_libraries(${MC_UNIT_TESTS} ${PROJECT_NAME_STR}_lib)
 
 enable_testing()
-add_test(DemoTest ${PROJECT_UNIT_TESTS_NAME})
+add_test(DemoTest ${MC_UNIT_TESTS})
