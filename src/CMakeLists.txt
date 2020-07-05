@@ -10,6 +10,7 @@ set(MC_LIB_SRC
         formula/Black76Formula.cpp
         )
 
-add_library(${MC_LIBRARY} STATIC ${MC_LIB_SRC})
+add_library(${MC_LIBRARY} SHARED ${MC_LIB_SRC})
+
 
 target_compile_features(${MC_LIBRARY} PRIVATE cxx_std_11)

@@ -12,7 +12,7 @@ Package Management: vcpkg
 
 Testing
 
-
+Python on Linux (default install had the base package,I needed sudo apt-get install -y python3.8-dev)
 
 
 
