@@ -1,3 +1,24 @@
+
+Non-trivial starter project to use CMake to create a cross platform C++ library which is tested, exposed via a command line application and as a python module. 
+
+The project structure is
+
+.
+├── bin/                                # Folder for built application binary
+│   ├── monte_carlo_derivatives_demo    # Built application executable
+    └── monte_carlo_derivatives_tests   # Built testing executable  
+├── cmake/                              # CMake build folder
+│   ├── shared/                         # CMake artifacts
+│   └── test/                           # Compiled test folder
+│       └── cmake_boost_demo_unit_tests # Built unit tests executable
+├── src/                                # Folder for all source files
+│   ├── shared/                         # Shared classes
+│   └── main.cpp                        # Main entry of the application
+├── test/                               # Test folder for all unit tests
+│   ├── shared/                         # Shared classes
+│   └── CMakeLists.txt                  # Compile script for unit tests
+└── CMakeLists.txt                      # Main compile script
+
 Never having being a professional coder nor having written code for years, I was reminded how hard it can be to start a C++ project when I started again recently. While I have grand ambitions, my experience slogging though a maze of document with many dead ends, made me decide to create and persist this 'starter project'. There are many of these around on GitHub but I soon realised that the fast moving world of standards, libraries and community projects, means there are often just better ways available to someone starting fresh. No doubt this will also be the case for you but the time you read this. Be that as it may, I found the ability to quickly clone a starter template and see what happened, greatly enhanced my ability to make some progress. I hope this may help you in the same way but please 
 note - I'm really not that good at this so don't be overly hasty to adopt my suggestions!
 
@@ -6,7 +27,7 @@ Aim: I wanted to create a C++ library with a test harness, a executable front en
 - The following extensions for VSCode
     - The ms-svcode.cpptools extension (https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
     - CMake Tools (https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)
-    - CMake twxs (https://marketplace.visualstudio.com/items?itemName=twxs.cmake) - for cmake sintax highlighting
+    - CMake twxs (https://marketplace.visualstudio.com/items?itemName=twxs.cmake) - for cmake syntax highlighting
 
 Package Management: vcpkg
 
@@ -17,7 +38,7 @@ Python on Linux (default install had the base package,I needed sudo apt-get inst
 
 
 In case you are really, really bored!
-A few years ago I wrote some code to 'structure derivative transactions' using excel as the front end. I was inspired by Quantlib.org but wanted to use the exercise to force myself to put in some time and effort into C++. I also wanted something less 'quanty' (read simpler) because had hoped to deploy my work for a foar less technical user base. A user base that understood their specific market well and 'knew' there was only one way to price those derivatives and just wanted 'that stuff' to be hidden from them. My main aim was to build a Monte Carlo Engine for derivative structures they composed, or added to, in order to calculate Risk and Finance measures that needed Full Monte Carlo (PFE, xVA, Basel Regulatory Capital etc).
+A few years ago I wrote some code to 'structure derivative transactions' using excel as the front end. I was inspired by Quantlib.org but wanted to use the exercise to force myself to put in some time and effort into C++. I also wanted something less 'quanty' (read simpler) because had hoped to deploy my work for a less technical user base. A user base that understood their specific market well and 'knew' there was only one way to price those derivatives and just wanted 'that stuff' to be hidden from them. My main aim was to build a Monte Carlo Engine for derivative structures they composed, or added to, in order to calculate Risk and Finance measures that needed Full Monte Carlo (PFE, xVA, Basel Regulatory Capital etc).
 
 I really struggled but managed to cobble something together. Even though I tried to build the code properly, there was just too much that I had to learn so, while it worked, it was a bit of a Frankenstein, parts borrowed from QuantLib, parts taken from Steve Dalton's book Excel Add-in Development in C/C++. While I was really happy the project managed to achieve it's objectives, it never really gained much traction - even a light structuring library gets quite messy and asking traders to choose between risk-neutral and real-world evolution of stochastic variables made the spreadsheets too difficult to use. It still required an expert audience. 
 

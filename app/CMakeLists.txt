@@ -1,6 +1,6 @@
 # Definitions
 set(MC_DEMO ${PROJECT_NAME_STR}_demo)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
 set(MC_DEMO_SRC 
     main.cpp
@@ -8,5 +8,5 @@ set(MC_DEMO_SRC
     
 add_executable(${MC_DEMO} ${MC_DEMO_SRC})
 
-target_link_libraries(${MC_DEMO} ${PROJECT_NAME_STR}_lib)
+target_link_libraries(${MC_DEMO} PRIVATE ${PROJECT_NAME_STR}_lib)
 

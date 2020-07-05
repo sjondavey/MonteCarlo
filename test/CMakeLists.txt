@@ -1,8 +1,5 @@
-# Project settings
-# Reference: https://github.com/albertchan/cmake-boost-demo
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ".")
-set(MC_UNIT_TESTS ${PROJECT_NAME_STR}_unit_tests)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
+set(MC_UNIT_TESTS ${PROJECT_NAME_STR}_tests)
 
 set(MC_LIB_TEST_SRC 
     test_main.cpp

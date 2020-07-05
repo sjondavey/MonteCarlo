@@ -4,15 +4,16 @@ cmake_minimum_required(VERSION 3.16)
 #  Global Configuration          #
 #================================#
 set(PROJECT_NAME_STR monte_carlo_derivatives)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # Project title and define versioning
 project(${PROJECT_NAME_STR} 
         VERSION 0.1.0
         DESCRIPTION "Monte Carlo simulation of derivatives"
         LANGUAGES CXX)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+
 
 # From: https://cmake.org/cmake/help/git-master/module/FindBoost.html
 # set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
