@@ -11,16 +11,6 @@ set(MC_LIB_TEST_SRC
 
 add_executable(${MC_UNIT_TESTS} ${MC_LIB_TEST_SRC})
 
-# Dependencies
-# add_definitions(-DBOOST_TEST_DYN_LINK)
-# find_package(Boost COMPONENTS filesystem system unit_test_framework REQUIRED)
-# if (Boost_FOUND)
-#   # ALREADY INCLUDED: include_directories(${Boost_INCLUDE_DIRS})
-#   target_link_libraries(${MC_UNIT_TESTS} ${Boost_LIBRARIES})
-# else()
-#    MESSAGE("***BOOST not found")
-# endif()
-
 target_link_libraries(${MC_UNIT_TESTS} ${PROJECT_NAME_STR}_lib)
 
 enable_testing()
