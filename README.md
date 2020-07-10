@@ -1,12 +1,13 @@
 
-Non-trivial starter project to use CMake to create a cross platform C++ library which is tested, exposed via a command line application and as a python module. 
+Non-trivial starter project making use of 'modern' CMake to create a cross platform C++ library which is tested, exposed via a command line application and as a python module. 
 
-The project structure is
+The CMake layout is modelled after the excellent talk 'Oh No! More Modern CMake' by Deniz Bahadir at 'Meeting C++ 2019' which is found here: https://www.youtube.com/watch?v=y9kSr5enrSk. It's a 'modern' CMake project i.e. makes use of targets. I am using some features in CMake dor boost that requires Boost 1.73.0. 
 
+My project structure is:
 .
 ├── bin/                                # Folder for built application binary
 │   ├── monte_carlo_derivatives_demo    # Built application executable
-    └── monte_carlo_derivatives_tests   # Built testing executable  
+│   └── monte_carlo_derivatives_tests   # Built testing executable  
 ├── cmake/                              # CMake build folder
 │   ├── shared/                         # CMake artifacts
 │   └── test/                           # Compiled test folder

@@ -1,26 +1,39 @@
 cmake_minimum_required(VERSION 3.16)
 
+include (${CMAKE_CURRENT_LIST_DIR}/project-meta-info.in)
+
 #================================#
 #  Global Configuration          #
 #================================#
 set(PROJECT_NAME_STR monte_carlo_derivatives)
-# Project title and define versioning
 project(${PROJECT_NAME_STR} 
-        VERSION 0.1.0
-        DESCRIPTION "Monte Carlo simulation of derivatives"
+        VERSION ${project_version}    # from project-meta-info.in
+        DESCRIPTION ${project_description}
         LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+#https://www.youtube.com/watch?v=y9kSr5enrSk
 
 
+# Boost: Get all the stuff you need once, don't load different packages in the sub-projects individual CMakeLists.txt
+set(BOOST_VERSION 1.73.0) #
 # From: https://cmake.org/cmake/help/git-master/module/FindBoost.html
-# set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
-find_package(Boost)
+set(Boost_USE_STATIC_LIBS        ON)  # only find static libs
+set(Boost_USE_DEBUG_LIBS         OFF) # ignore debug libs and
+set(Boost_USE_RELEASE_LIBS       ON)  # only find release libs
+set(Boost_USE_MULTITHREADED      ON)
+set(Boost_USE_STATIC_RUNTIME    OFF)
+# For some reason I cannot get find_package(...) to work in CONFIG mode with vcpkg. I am able to get the default modelue mode
+# to work so I'm sticking with that
+find_package(Boost ${BOOST_VERSION} REQUIRED) # I'm using the header only math package so am not providing COMPONENTS here
+
 if (Boost_FOUND)
+  # if target is found, make it global scope
+  # set_target_property(Boost::boost # Boost::boost for the header only libraries
+  #                     PROPERTIES GLOBAL TRUE)   
   include_directories(${Boost_INCLUDE_DIRS})
-  # DO I NEED BOOST LIBRARIES? target_link_libraries(${MC_LIBRARY} ${Boost_LIBRARIES})
 else()
    MESSAGE("BOOST not found")
 endif()
