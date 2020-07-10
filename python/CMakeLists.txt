@@ -2,7 +2,12 @@ cmake_minimum_required(VERSION 3.16) # Helps to have this repeated in case you w
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
+
 # https://pybind11.readthedocs.io/en/stable/compiling.html#pybind11-add-module
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    #set(PYBIND11_PYTHON_VERSION 3.8 CACHE STRING "") - it may now be that I do not need to worry that PYBIND11_PYTHON_VERSION is a cache variable
+    set(PYBIND11_PYTHON_VERSION 3.8)
+endif()
 find_package(pybind11 CONFIG REQUIRED)
 
 set(MC_PYTHON_SRC 
