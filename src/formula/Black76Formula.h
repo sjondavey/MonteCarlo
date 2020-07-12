@@ -23,15 +23,15 @@ namespace sjd {
    /*======================================================================================
     Black76Option: Black '76 Futures Option pricing algorithm.
 
-    This simple model contains no greeks (analytic or numberic) becuase in almost every 
-    contract there will be a specific way to calcuate these measures. These specific bumps
+    This simple model contains no greeks (analytic or numberic) because in almost every 
+    contract there will be a specific way to calculate these measures. These specific bumps
     require additional date, calendar and curve information. Greeks used in a trading system are
     always numeric and should always use the contract's logic. It is therefore left to the
     contract to make repeated calls to this formula or the Portfolio to make repeated calls
-    of the contract to calcualte greeks becuase only at those levels will we have sufficient 
+    of the contract to calculate greeks because only at those levels will we have sufficient 
     information to to bump inputs.
         
-    Wherever possible, inputs to this forumula are unitless so. In particular
+    Wherever possible, inputs to this formula are unitless so. In particular
     the formula makes use of
       - discount factors rather than interest rates; 
       - standard deviation rather than volatility; and 
@@ -56,7 +56,7 @@ namespace sjd {
     interest rate, forward and volatility rate source. These could all be slightly different
     and it would be very difficult to ensure consistency between "dumb" formula and clever
     rate sources without embedding a lot of logic which is 
-        - unncesary
+        - unnecessary
         - only going to make the code more error prone and slower
 
     @author Steve Davey

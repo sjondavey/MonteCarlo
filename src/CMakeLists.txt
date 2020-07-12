@@ -2,13 +2,17 @@ cmake_minimum_required(VERSION 3.16) # Helps to have this repeated in case you w
 
 set(MC_LIBRARY ${PROJECT_NAME_STR}_lib)
 
+#include(${CMAKE_CURRENT_LIST_DIR}/cmake/quantlib.cmake)
+
+
 set(MC_LIB_HDR 
     formula/Black76Formula.h
+    ratesource/discount/DiscountCurve.h
     )
-
 
 set(MC_LIB_SRC 
     formula/Black76Formula.cpp
+    ratesource/discount/DiscountCurve.cpp
     )
 
 # Making use of the target_sources(...) to add sources and headers rather than listing them in the add_library(...) macro. 
@@ -24,4 +28,6 @@ target_sources(${MC_LIBRARY}
                 PRIVATE ${MC_LIB_SRC}
                 INTERFACE ${MC_LIB_HDR}) # Header not required for build, therefore 
 
-
+target_link_libraries(${MC_LIBRARY} 
+                      debug ${QUANTLIB_DIR}/debug/lib/QuantLib-vc141-x64-mt-gd.lib
+                      optimized ${QUANTLIB_DIR}/lib/QuantLib-vc141-x64-mt.lib)

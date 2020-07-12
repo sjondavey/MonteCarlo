@@ -9,6 +9,7 @@ using namespace pybind11::literals; // shorthand for py::args
 
 namespace py = pybind11;
 
+
 double call_value(double forward, double strike, double sd, double df)
 {
     std::unique_ptr<sjd::Black76Option> call = std::make_unique<sjd::Black76Call>(forward, strike, sd, df);

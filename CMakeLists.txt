@@ -38,6 +38,23 @@ else()
    MESSAGE("BOOST not found")
 endif()
 
+#quantlib library --------------------------------------------------------------------------------------------
+add_library(quantlib STATIC IMPORTED)
+add_library(quantlibDebug STATIC IMPORTED)
+
+if(MSVC)
+  set(QUANTLIB_DIR "E:/SD/Programming/C++/vcpkg/installed/x64-windows" CACHE PATH "The path to the quantlib directory")
+  set(QL_OPTIMISED_LIB ${QUANTLIB_DIR}/lib/QuantLib-vc141-x64-mt.lib)
+  SET(QL_DEBUG_LIB ${QUANTLIB_DIR}/debug/lib/QuantLib-vc141-x64-mt-gd.lib)
+else()
+  set(QUANTLIB_DIR "/usr/vcpkg/installed/x64-linux" CACHE PATH "The path to the quantlib directory")
+  set(QL_OPTIMISED_LIB ${QUANTLIB_DIR}/lib/??.lib)
+  SET(QL_DEBUG_LIB ${QUANTLIB_DIR}/debug/lib/??.lib)
+endif()
+include_directories(${QUANTLIB_DIR})
+set_target_properties(quantlib PROPERTIES IMPORTED_LOCATION ${QL_OPTIMISED_LIB})
+set_target_properties(quantlibDebug PROPERTIES IMPORTED_LOCATION ${QL_DEBUG_LIB})
+
 
 # Find other CMakeList.txt 
 add_subdirectory(src)

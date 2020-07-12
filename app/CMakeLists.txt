@@ -1,8 +1,7 @@
 cmake_minimum_required(VERSION 3.16) # Helps to have this repeated in case you want this to be the root of seperate project
 
-# Definitions
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 set(MC_DEMO ${PROJECT_NAME_STR}_demo)
-#set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_SOURCE_DIR}/bin")
 
 set(MC_DEMO_SRC 
     main.cpp

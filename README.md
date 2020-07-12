@@ -1,44 +1,24 @@
 
-Non-trivial starter project making use of 'modern' CMake to create a cross platform C++ library which is tested, exposed via a command line application and as a python module. 
+# What is this?
+The start of a Derivative Monte Carlo engine. I wanted to pick up some C++ and felt I had to justify the use of a complex environnement with something that performed a lot of calculations.
 
-The CMake layout is modelled after the excellent talk 'Oh No! More Modern CMake' by Deniz Bahadir at 'Meeting C++ 2019' which is found here: https://www.youtube.com/watch?v=y9kSr5enrSk. It's a 'modern' CMake project i.e. makes use of targets. I am using some features in CMake dor boost that requires Boost 1.73.0. 
+I have [starter project](https://github.com/sjondavey/cmake-starter) to test out the build environnement and tools. It was hard to get to the point where I could write code. In the end, I had to make compromises and leave things before I really understood what was happening. Hopefully it's still relatively easy to follow.
 
-My project structure is:
-.
-├── bin/                                # Folder for built application binary
-│   ├── monte_carlo_derivatives_demo    # Built application executable
-│   └── monte_carlo_derivatives_tests   # Built testing executable  
-├── cmake/                              # CMake build folder
-│   ├── shared/                         # CMake artifacts
-│   └── test/                           # Compiled test folder
-│       └── cmake_boost_demo_unit_tests # Built unit tests executable
-├── src/                                # Folder for all source files
-│   ├── shared/                         # Shared classes
-│   └── main.cpp                        # Main entry of the application
-├── test/                               # Test folder for all unit tests
-│   ├── shared/                         # Shared classes
-│   └── CMakeLists.txt                  # Compile script for unit tests
-└── CMakeLists.txt                      # Main compile script
-
-Never having being a professional coder nor having written code for years, I was reminded how hard it can be to start a C++ project when I started again recently. While I have grand ambitions, my experience slogging though a maze of document with many dead ends, made me decide to create and persist this 'starter project'. There are many of these around on GitHub but I soon realised that the fast moving world of standards, libraries and community projects, means there are often just better ways available to someone starting fresh. No doubt this will also be the case for you but the time you read this. Be that as it may, I found the ability to quickly clone a starter template and see what happened, greatly enhanced my ability to make some progress. I hope this may help you in the same way but please 
-note - I'm really not that good at this so don't be overly hasty to adopt my suggestions!
-
-Aim: I wanted to create a C++ library with a test harness, a executable front end and a python module. I wanted to create this to be compiled across platforms because I have a hunch that I really want the end product deployed in docker (although there is nothing here about docker - that may come later). I wanted to start fresh so that I could explore all the fantastic new stuff in C++ as a result of all the new standards. To that, here are some of the decisions I made
-- I used Visual Studio Code (1.46.0) because I wanted to interact with the project in Windows and Linux (with the aim of ensuring that a move to docker may be easier if I was not doing platform specific stuff)
-- The following extensions for VSCode
-    - The ms-svcode.cpptools extension (https://marketplace.visualstudio.com/items?itemName=ms-vscode.cpptools)
-    - CMake Tools (https://marketplace.visualstudio.com/items?itemName=ms-vscode.cmake-tools)
-    - CMake twxs (https://marketplace.visualstudio.com/items?itemName=twxs.cmake) - for cmake syntax highlighting
-
-Package Management: vcpkg
-
-Testing
-
-Python on Linux (default install had the base package,I needed sudo apt-get install -y python3.8-dev)
+## Use
+The project builds an equivalent of 'montecarlo.cp37-win_amd64.pyd' in Windows under the build directory. If you launch a Python from the command line in this directory they the tools is accessed as
+```python
+import montecarlo as mc
+help(mc.call_value)
+mc.call_value(100,110,0.2,0.98)
+help(mc.Black76Call)
+call = mc.Black76Call(100,110,0.2,0.98)
+call.delta()
+```
 
 
 
-In case you are really, really bored!
+
+## In case you are really, really bored!
 A few years ago I wrote some code to 'structure derivative transactions' using excel as the front end. I was inspired by Quantlib.org but wanted to use the exercise to force myself to put in some time and effort into C++. I also wanted something less 'quanty' (read simpler) because had hoped to deploy my work for a less technical user base. A user base that understood their specific market well and 'knew' there was only one way to price those derivatives and just wanted 'that stuff' to be hidden from them. My main aim was to build a Monte Carlo Engine for derivative structures they composed, or added to, in order to calculate Risk and Finance measures that needed Full Monte Carlo (PFE, xVA, Basel Regulatory Capital etc).
 
 I really struggled but managed to cobble something together. Even though I tried to build the code properly, there was just too much that I had to learn so, while it worked, it was a bit of a Frankenstein, parts borrowed from QuantLib, parts taken from Steve Dalton's book Excel Add-in Development in C/C++. While I was really happy the project managed to achieve it's objectives, it never really gained much traction - even a light structuring library gets quite messy and asking traders to choose between risk-neutral and real-world evolution of stochastic variables made the spreadsheets too difficult to use. It still required an expert audience. 
