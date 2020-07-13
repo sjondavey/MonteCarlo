@@ -1,199 +1,86 @@
-#include "DiscountCurve.h"
+#include "discountcurve.h"
+#include <algorithm>
 
 namespace sjd {
 
     /*======================================================================================
     DiscountCurve 
     =======================================================================================*/
-    DiscountCurve::DiscountCurve() 
+    DiscountCurve::DiscountCurve(QuantLib::Date anchorDate, 
+                                 std::vector<QuantLib::Date> observationDates, 
+                                 std::vector<double> discountFactors, 
+                                 std::string interpolationType) 
     {
-        // errorTracking = boost::shared_ptr<sjdTools::ErrorTracking>(new sjdTools::ErrorTracking("DiscountCurve"));
-        // resetErrorMessages();
-        d1 = QuantLib::Date(27,QuantLib::Jan,1974);
+        errorTracking = std::make_unique<ErrorTracking>("DiscountCurve");
+        this->anchorDate = anchorDate;
+        this->observationDates = observationDates;
+        this->discountFactors = discountFactors;
+        this->finalDate = *(--observationDates.end());
+        this->allowExtrapolation = false;
+
+        std::transform(interpolationType.begin(), interpolationType.end(), interpolationType.begin(), ::tolower);
+        serialNumbers = std::vector<QuantLib::Date::serial_type>(observationDates.size());
+        for(std::size_t i = 0; i < observationDates.size(); ++i) {
+            serialNumbers[i] = observationDates[i].serialNumber();
+        }
+
+        if (interpolationType == "linear") {
+            interpolator = QuantLib::LinearInterpolation(serialNumbers.begin(), serialNumbers.end(), this->discountFactors.begin());
+        }
+        else {
+            interpolator = QuantLib::LinearInterpolation(serialNumbers.begin(), serialNumbers.end(), this->discountFactors.begin());
+        }
     }
 
-    int DiscountCurve::day() {return d1.dayOfYear();}
+    bool DiscountCurve::isOK()
+    {
+        if (!RateSource::isOK())
+        {
+            return false;
+        }
+        string errorMessage = "";
+        if (observationDates.size() != discountFactors.size())
+        {
+            errorMessage = "Observation date must have the same number of points as  Discount factors";
+            errorTracking->populateErrorMessage(errorMessage);
+        }
+        if (!is_sorted(serialNumbers.begin(), serialNumbers.end()))
+        {
+            errorMessage = "Observation dates are not strictly increasing";
+            errorTracking->populateErrorMessage(errorMessage);
+        }
+        if (anchorDate != *(observationDates.begin()))
+        {
+            errorMessage = "First observation date must be the same as the anchor date for a discount curve";
+            errorTracking->populateErrorMessage(errorMessage);
+        }
+        if (abs(discountFactors[0]-1) > 1e-13) {
+            errorMessage = "First discount rate must be 1.0";
+            errorTracking->populateErrorMessage(errorMessage);
+        }
+        for (size_t i = 0; i < discountFactors.size(); ++i) 
+        {
+            bool hasNegativeInputs = false;
+            if ((!hasNegativeInputs) && (discountFactors[i] <= 0) )
+            {
+                errorTracking->populateErrorMessage("Curve has negative discount factors");
+                hasNegativeInputs = true;
+            }
+        }
+        // Not check for discount factors > 1.0 (i.e. negative interest rates). This should not impact this class
+        return !errorTracking->getHasErrors();
+    }
 
-//     DiscountCurve::DiscountCurve(Date anchorDateInput, 
-//                                  vector<Date> observationDatesInput, 
-//                                  vector<double> discountFactorsInput, 
-//                                  ArrayInterpolatorType typeInput,
-//                                  bool allowExtrapolationInput) 
-//     {
-//         errorTracking = boost::shared_ptr<sjdTools::ErrorTracking>(new sjdTools::ErrorTracking("DiscountCurve"));
+    double DiscountCurve::getDiscountFactor(QuantLib::Date toDate) const
+    {
+        if ((toDate < anchorDate) || (toDate > finalDate)) {
+            return std::numeric_limits<double>::quiet_NaN();
+        }
+        return this->interpolator(toDate.serialNumber());
+    }
 
-//         datedCurve = boost::shared_ptr<DatedCurve>(new DatedCurve(anchorDateInput, 
-//                                                                   observationDatesInput, 
-//                                                                   discountFactorsInput,
-//                                                                   typeInput,
-//                                                                   allowExtrapolationInput));
-//         anchorDate = datedCurve->getAnchorDate();
-//         allowExtrapolation = datedCurve->getAllowsExtrapolation();
-//         finalDate = datedCurve->getFinalDate();
-//         type = typeInput;
-//         string tmp;
-//         if (datedCurve->isOK(tmp) && 
-//             (!datedCurve->containsRateOnAnchorDate()))
-//         {
-//             datedCurve->addPointOnAnchorDate(1.0);
-//         }
-//     }
-
-//     bool DiscountCurve::isOK()
-//     {
-//         DeterministicDiscountRateSource::isOK();
-//         string errorMessage = "";
-//         if (!datedCurve->isOK(errorMessage))
-//         {
-//             errorTracking->populateErrorMessage(errorMessage);
-//             return false;
-//         }
-//         for (size_t i = 0; i < datedCurve->getObservationDates().size(); ++i) 
-//         {
-//             bool hasNegativeInputs = false;
-//             if ((!hasNegativeInputs) && 
-//                 (datedCurve->getRates()[i] <= 0) )
-//             {
-//                 errorTracking->populateErrorMessage("has negative inputs");
-//                 hasNegativeInputs = true;
-//             }
-//         }
-//         return !errorTracking->getHasErrors();
-//     }
-
-
-//     double DiscountCurve::getDiscountFactor(Date toDate) const
-//     {
-//         return datedCurve->getRate(toDate);
-//     }
-
-//      vector<Date> DiscountCurve::getObservationDates() const
-//      {
-//          return datedCurve->getObservationDates();
-//      }
-
-//     ArrayInterpolatorType DiscountCurve::getType()
-//     {
-//         return type;
-//     }
-    
-    
-//     boost::shared_ptr<DiscountRateSource> DiscountCurve::parallelBump(double spread,
-//                                                                       boost::shared_ptr<InterestRateConvention> convention)
-//     {
-//         vector<Date> curveDates = getObservationDates();
-//         vector<double> bumpedDiscountFactors = vector<double>(curveDates.size()); 
-//         size_t startIndex = 0;
-//         if (curveDates[0] == anchorDate) 
-//         {
-//             bumpedDiscountFactors[0] = 1.0;
-//             ++startIndex;
-//         }
-//         for (size_t i = startIndex; i < curveDates.size(); ++i)
-//         {
-//             double df = getDiscountFactor(curveDates[i]);
-//             double rate = convention->dfToRate(df, anchorDate, curveDates[i]);
-//             bumpedDiscountFactors[i] = convention->rateToDF(rate + spread, anchorDate, curveDates[i]);
-//         }
-
-//         return boost::shared_ptr<DiscountCurve>(new DiscountCurve(anchorDate, 
-//                                                                   curveDates, 
-//                                                                   bumpedDiscountFactors, 
-//                                                                   datedCurve->getType(),
-//                                                                   allowExtrapolation));
-
-//     }
-
-//     boost::shared_ptr<DiscountRateSource> DiscountCurve::rollForward(Date toDate)
-//     {
-//         vector<Date> rolledObservationDates;
-//         vector<double> rolledDiscountFactors; 
-//         if (!isInRange(toDate))
-//         {
-//             rolledObservationDates.push_back(toDate);
-//             rolledDiscountFactors.push_back(1.0);
-//         }
-//         else if (toDate == anchorDate)
-//         {
-//             rolledObservationDates = getObservationDates();
-//             rolledDiscountFactors = vector<double>(datedCurve->getRates().size());
-//             for (size_t i = 0; i < rolledDiscountFactors.size(); ++i)
-//             {
-//                 rolledDiscountFactors[i] = (datedCurve->getRates()[i]);
-//             }
-//         }
-//         else
-//         {
-//             for (size_t i = 0; i < getObservationDates().size(); ++i)
-//             {
-//                 double dfToDate = getDiscountFactor(toDate);
-//                 if (getObservationDates()[i] >= toDate) 
-//                 {
-//                     rolledObservationDates.push_back(getObservationDates()[i]);
-//                     rolledDiscountFactors.push_back(getDiscountFactor(getObservationDates()[i]) / dfToDate);
-//                 }
-//             }
-//         }
-//         return boost::shared_ptr<DiscountCurve>(new DiscountCurve(toDate, 
-//                                                                   rolledObservationDates, 
-//                                                                   rolledDiscountFactors, 
-//                                                                   datedCurve->getType(),
-//                                                                   allowExtrapolation));
-//      }
-
-
-//     vector<pair<string, boost::shared_ptr<RateSource>>> DiscountCurve::getMarketRateStresses()
-//     {
-//         vector<pair<string, boost::shared_ptr<RateSource>>> marketStress  = 
-//             DeterministicDiscountRateSource::getMarketRateStresses();
-
-//         boost::shared_ptr<Calendar> calendar = boost::shared_ptr<Calendar>(
-//             new NullCalendar()); 
-//         vector<Date> threeMonthDates;
-//         vector<double> threeMonthDF;
-//         Date dateToAdd = anchorDate;
-//         double df = 1.0;
-//         while (dateToAdd <= finalDate) 
-//         {
-//             threeMonthDates.push_back(dateToAdd);
-//             df = getDiscountFactor(dateToAdd);
-//             threeMonthDF.push_back(df);
-//             dateToAdd = calendar->advance(dateToAdd,3,Months); 
-//         }
-//         if (threeMonthDates.back() < finalDate)
-//         {
-//             threeMonthDates.push_back(finalDate);
-//             threeMonthDF.push_back(getDiscountFactor(finalDate));
-//         }
-//         dateToAdd = anchorDate;
-
-//         boost::shared_ptr<DiscountCurve> dc = boost::shared_ptr<DiscountCurve>(
-//             new DiscountCurve(anchorDate, threeMonthDates, threeMonthDF, LINEAR, allowExtrapolation));
-
-//         marketStress.push_back(make_pair("ZC Stress base", dc));
-
-//         boost::shared_ptr<DayCounter> act360 = boost::shared_ptr<DayCounter>(new Actual360());
-//         InterestRateConvention irc(act360, Compounded, Annual);
-
-//         for (size_t i = 1; i < threeMonthDates.size(); ++i)
-//         {
-//             dateToAdd = calendar->advance(dateToAdd,3,Months); 
-//             if (dateToAdd == threeMonthDates[i])
-//             {
-//                 double originalDF = threeMonthDF[i];
-//                 double adjustedDF = irc.rateToDF(irc.dfToRate(originalDF + 0.0001, anchorDate, threeMonthDates[i]), 
-//                                                  anchorDate, threeMonthDates[i]);
-//                 threeMonthDF[i] = adjustedDF;
-
-//                 stringstream ss;
-//                 ss << "DF 1 bp ZC Stress at " << i * 3 << "m";
-//                 string description = ss.str();
-//                 dc = boost::shared_ptr<DiscountCurve>(new DiscountCurve(anchorDate, threeMonthDates, threeMonthDF, LINEAR, allowExtrapolation));
-
-//                 marketStress.push_back(make_pair(description, dc));
-//                 threeMonthDF[i] = originalDF;
-//             }
-//         }
-//         return marketStress;
-//     }
+    std::vector<QuantLib::Date> DiscountCurve::getObservationDates() const
+    {
+        return observationDates;
+    }        
 }

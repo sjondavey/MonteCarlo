@@ -1,10 +1,9 @@
 #ifndef SJD_DISCOUNTCURVE_INCLUDED
 #define SJD_DISCOUNTCURVE_INCLUDED
 
-
-#include <ql\time\date.hpp>
-
-//using namespace QuantLib;
+#include "discountratesource.h"
+#include <ql/math/interpolations/linearinterpolation.hpp>
+#include <ql/time/date.hpp>
 
 namespace sjd 
 {
@@ -14,38 +13,29 @@ namespace sjd
     NOTE : There are no calendar objects here, all dates are assumed to be good dates
             by the time they hit this class
     =======================================================================================*/
-    class DiscountCurve 
+    class DiscountCurve : public DiscountRateSource
     {
     public:
-        QuantLib::Date d1;
-        DiscountCurve();
-        int day();
+        // Currently only implemented for interpolationType == linear
+        // TODO: Add other types, especially loglinear
+        DiscountCurve(QuantLib::Date anchorDate, 
+                      std::vector<QuantLib::Date> observationDates, 
+                      std::vector<double> discountFactors, 
+                      std::string interpolationType);    
         
-        // DiscountCurve(Date anchorDate, 
-        //               vector<Date> observationDates, 
-        //               vector<double> discountFactors, 
-        //               ArrayInterpolatorType type = LINEAR,
-        //               bool allowExtrapolation = false);    
-        
-        // virtual ~DiscountCurve() {};
+        virtual ~DiscountCurve() {};
 
-        // virtual bool isOK();
+        virtual bool isOK();
 
-        // virtual double getDiscountFactor(Date toDate) const;
-        // using DiscountRateSource::getDiscountFactor;
+        virtual double getDiscountFactor(QuantLib::Date toDate) const;
 
-        // vector<Date> getObservationDates() const;
-        // ArrayInterpolatorType getType();
-
-        // virtual vector<pair<string, boost::shared_ptr<RateSource>>> getMarketRateStresses();
-        // virtual boost::shared_ptr<DiscountRateSource> parallelBump(double spread,
-        //                                                            boost::shared_ptr<InterestRateConvention> irc);
-
-        // virtual boost::shared_ptr<DiscountRateSource> rollForward(Date toDate);
+        std::vector<QuantLib::Date> getObservationDates() const;
 
     protected:
-        // boost::shared_ptr<DatedCurve> datedCurve;
-        // ArrayInterpolatorType type;
+        std::vector<QuantLib::Date> observationDates;
+        std::vector<QuantLib::Date::serial_type> serialNumbers; // for the interpolator which does not keep the vector
+        std::vector<double> discountFactors;
+        QuantLib::Interpolation interpolator;
     };
 }
 

@@ -58,9 +58,19 @@ set_target_properties(quantlibDebug PROPERTIES IMPORTED_LOCATION ${QL_DEBUG_LIB}
 
 # Find other CMakeList.txt 
 add_subdirectory(src)
-add_subdirectory(test)
 add_subdirectory(app)
 add_subdirectory(python)
+
+# Testing : see https://cliutils.gitlab.io/modern-cmake/chapters/testing.html
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    include(CTest)
+endif()
+
+enable_testing()
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
+    add_subdirectory(test)
+endif()
 
 
 # Notes:

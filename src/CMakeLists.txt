@@ -6,13 +6,18 @@ set(MC_LIBRARY ${PROJECT_NAME_STR}_lib)
 
 
 set(MC_LIB_HDR 
+    tools/errortracking.h
     formula/Black76Formula.h
-    ratesource/discount/DiscountCurve.h
+    ratesource/ratesource.h
+    ratesource/discount/discountratesource.h
+    ratesource/discount/discountcurve.h
     )
 
 set(MC_LIB_SRC 
+    tools/errortracking.cpp
     formula/Black76Formula.cpp
-    ratesource/discount/DiscountCurve.cpp
+    ratesource/ratesource.cpp
+    ratesource/discount/discountcurve.cpp
     )
 
 # Making use of the target_sources(...) to add sources and headers rather than listing them in the add_library(...) macro. 

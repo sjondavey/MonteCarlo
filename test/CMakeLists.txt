@@ -5,6 +5,8 @@ set(MC_UNIT_TESTS ${PROJECT_NAME_STR}_tests)
 
 set(MC_LIB_TEST_SRC 
     test_main.cpp
+    errortrackingtest.cpp
+    discountcurvetest.cpp
     Black76FormulaTest.cpp
     )
 
@@ -15,5 +17,4 @@ add_executable(${MC_UNIT_TESTS} ${MC_LIB_TEST_SRC})
 # You should not ommit one of these keywords, even though the macro allows you to do so - it may behave erratically
 target_link_libraries(${MC_UNIT_TESTS} PRIVATE ${PROJECT_NAME_STR}_lib)
 
-enable_testing()
-add_test(DemoTest ${MC_UNIT_TESTS})
+add_test(NAME UnitTests COMMAND ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${MC_UNIT_TESTS})

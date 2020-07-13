@@ -16,8 +16,8 @@ int main()
     std::unique_ptr<Black76Option> put = std::make_unique<Black76Put>(F,X,sd,df);
     std::cout << abs(put->value() - call->value());
 
-    std::unique_ptr<sjd::DiscountCurve> curve = std::make_unique<sjd::DiscountCurve>();
-    std::cout << "Testing QL: " << curve->day();
+    // std::unique_ptr<sjd::DiscountCurve> curve = std::make_unique<sjd::DiscountCurve>();
+    // std::cout << "Testing QL: " << curve->day();
 
 
     return 0;
