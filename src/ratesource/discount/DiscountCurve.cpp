@@ -9,9 +9,11 @@ namespace sjd {
     DiscountCurve::DiscountCurve(QuantLib::Date anchorDate, 
                                  std::vector<QuantLib::Date> observationDates, 
                                  std::vector<double> discountFactors, 
-                                 std::string interpolationType) 
+                                 std::string interpolationType,
+                                 std::string currencyCode) 
     {
         errorTracking = std::make_unique<ErrorTracking>("DiscountCurve");
+        this->currencyCode = currencyCode;
         this->anchorDate = anchorDate;
         this->observationDates = observationDates;
         this->discountFactors = discountFactors;
@@ -77,6 +79,11 @@ namespace sjd {
             return std::numeric_limits<double>::quiet_NaN();
         }
         return this->interpolator(toDate.serialNumber());
+    }
+
+    const std::string& DiscountCurve::getCurrencyCode() const
+    {
+        return currencyCode;
     }
 
     std::vector<QuantLib::Date> DiscountCurve::getObservationDates() const

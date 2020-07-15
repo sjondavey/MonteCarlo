@@ -6,6 +6,7 @@ using namespace sjd;
 
 TEST_CASE("Discount Curve Tests", "[ratesource]") {
     unique_ptr<DiscountCurve> dc;
+    string currencyCode = "ZAR";
     QuantLib::Date anchorDate = QuantLib::Date(7, QuantLib::Jul, 2020);
     vector<QuantLib::Date> observationDates;
     vector<double> discountFactors;
@@ -25,7 +26,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         discountFactors.push_back(1.0);
         discountFactors.push_back(0.95);
         discountFactors.push_back(0.90);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == false);
 
         // No observation date on the anchor date
@@ -35,7 +36,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         observationDates.push_back(QuantLib::Date(1, QuantLib::Jul, 2021));
         discountFactors.push_back(1.0);
         discountFactors.push_back(0.95);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == false);
 
         // first discount factor not 1.0
@@ -45,7 +46,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         observationDates.push_back(QuantLib::Date(1, QuantLib::Jul, 2021));
         discountFactors.push_back(1.1);
         discountFactors.push_back(0.95);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == false);
 
         // negative discount rate
@@ -55,7 +56,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         observationDates.push_back(QuantLib::Date(1, QuantLib::Jul, 2021));
         discountFactors.push_back(1.0);
         discountFactors.push_back(-0.95);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == false);
 
         // observation dates not strictly increasing
@@ -67,7 +68,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         discountFactors.push_back(1.0);
         discountFactors.push_back(1.0);
         discountFactors.push_back(-0.95);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == false);
 
         // All good
@@ -77,7 +78,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         observationDates.push_back(QuantLib::Date(1, QuantLib::Jul, 2021));
         discountFactors.push_back(1.0);
         discountFactors.push_back(0.95);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "LINEAR");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == true);
     }
 
@@ -89,7 +90,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         observationDates.push_back(QuantLib::Date(1, QuantLib::Jul, 2021));
         discountFactors.push_back(1.0);
         discountFactors.push_back(0.95);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == true);
 
         REQUIRE(dc->getObservationDates().size() == observationDates.size());
@@ -113,7 +114,7 @@ TEST_CASE("Discount Curve Tests", "[ratesource]") {
         observationDates.push_back(QuantLib::Date(1, QuantLib::Jul, 2021));
         discountFactors.push_back(1.0);
         discountFactors.push_back(0.95);
-        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear");
+        dc = make_unique<DiscountCurve>(anchorDate, observationDates, discountFactors, "linear", currencyCode);
         REQUIRE(dc->isOK() == true);
         REQUIRE(dc->getAllowsExtrapolation() == false);
 

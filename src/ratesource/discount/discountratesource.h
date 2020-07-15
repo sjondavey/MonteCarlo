@@ -30,6 +30,8 @@ namespace sjd
 
         // NB Dates assumed to be good. Call isInRange(...) before calling this
         virtual double getDiscountFactor(QuantLib::Date toDate) const = 0;
+        // returns the ISO 4217 three-letter code, e.g, "USD"
+        virtual const std::string& getCurrencyCode() const = 0;
     };
 }
 
