@@ -11,6 +11,7 @@ set(MC_LIB_HDR
     ratesource/ratesource.h
     ratesource/discount/discountratesource.h
     ratesource/discount/discountcurve.h
+    ratesource/discount/flatrate.h
     )
 
 set(MC_LIB_SRC 
@@ -18,6 +19,7 @@ set(MC_LIB_SRC
     formula/Black76Formula.cpp
     ratesource/ratesource.cpp
     ratesource/discount/discountcurve.cpp
+    ratesource/discount/flatrate.cpp
     )
 
 # Making use of the target_sources(...) to add sources and headers rather than listing them in the add_library(...) macro. 

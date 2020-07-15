@@ -7,6 +7,7 @@ set(MC_LIB_TEST_SRC
     test_main.cpp
     errortrackingtest.cpp
     discountcurvetest.cpp
+    flatratetest.cpp
     Black76FormulaTest.cpp
     )
 
